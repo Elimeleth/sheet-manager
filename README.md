@@ -76,7 +76,3 @@ Desarrollado por **Elimeleth**
 Correo: `elimeleth.contacto@gmail.com`
 
 Optimizado para flujos de trabajo robustos y dinámicos.
-
-¿Quieres extenderlo para múltiples hojas, estilos, o integraciones con Google Sheets?
-
-Abre un issue o mejora el nodo.
