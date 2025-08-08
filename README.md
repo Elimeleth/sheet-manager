@@ -1,48 +1,82 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
 
-# n8n-nodes-starter
+# Sheet Manager (n8n Custom Node)
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+**Sheet Manager** es un nodo personalizado para n8n que permite crear, leer, editar, visualizar y borrar archivos `.xlsx` directamente desde tus flujos de trabajo. Está construido usando `exceljs`, funciona sin credenciales y opera sobre rutas relativas a un directorio de trabajo (`/data/sheet-manager` por defecto).
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+## Características principales
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+* Crear archivos XLSX con encabezados personalizados y filas dinámicas.
+* Agregar datos a hojas existentes sin sobrescribir (modo append).
+* Visualizar contenido de hojas específicas como JSON y archivo binario.
+* Editar filas específicas en función de una condición.
+* Eliminar archivos XLSX fácilmente.
+* Leer archivo completo como binario para descargar o reenviar.
 
-## Prerequisites
+## Instalación
 
-You need the following installed on your development machine:
+Este nodo es parte de un desarrollo personalizado. Asegúrate de colocarlo en tu directorio de nodos personalizados en n8n:
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+```bash
+~/.n8n/custom-nodes/
+```
 
-## Using this starter
+## Parámetros del Nodo
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+| Campo                          | Descripción                                                               | Operaciones disponibles |
+| ------------------------------ | -------------------------------------------------------------------------- | ----------------------- |
+| Operación                     | Define la acción a realizar (view, create, edit, etc)                     | Todos                   |
+| Archivo (.xlsx)                | Ruta al archivo. Si no es absoluta, se asume dentro de /data/sheet-manager | Todos                   |
+| Nombre del Archivo             | Reemplaza el nombre del archivo en la ruta                                 | create                  |
+| Hoja                           | Nombre de la hoja a procesar                                               | view, create, edit      |
+| Modo Append                    | Agrega datos al final en lugar de sobrescribir                             | create                  |
+| Encabezados personalizados     | Define manualmente los encabezados de columna                              | create                  |
+| Valor por Defecto para Vacíos | Se usa cuando falta una propiedad en un objeto                             | create                  |
+| Datos JSON                     | Array de objetos que representan filas                                     | create                  |
+| Columna de Condición          | Columna para buscar la fila a modificar                                    | edit                    |
+| Valor de Condición            | Valor exacto a buscar en la columna de condición                          | edit                    |
+| Columna a Modificar            | Columna a cambiar (si se omite, se usa la de condición)                   | edit                    |
+| Nuevo Valor                    | Valor nuevo a asignar                                                      | edit                    |
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+```json
+{
+  "operation": "create",
+  "filePath": "reporte.xlsx",
+  "sheetName": "Ventas",
+  "append": true,
+  "headers": {
+    "headersValues": [{ "header": "Producto" }, { "header": "Cantidad" }]
+  },
+  "defaultFillValue": "N/A",
+  "data": [
+    { "Producto": "Manzana", "Cantidad": 10 },
+    { "Producto": "Pera" }
+  ]
+}
 
-## More information
+```
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
 
-## License
+## Consideraciones
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+* Si una hoja no existe en `create`, se crea automáticamente.
+* En `edit`, la búsqueda es exacta (pero case-insensitive).
+* El orden de las columnas no afecta el funcionamiento.
+* Las hojas deben tener encabezados en la primera fila.
+
+## Requisitos
+
+* Node.js >= 18
+* n8n instalado localmente o en entorno controlado
+* Dependencia: `exceljs`
+
+## Autor
+
+Desarrollado por **Elimeleth**
+
+Correo: `elimeleth.contacto@gmail.com`
+
+Optimizado para flujos de trabajo robustos y dinámicos.
+
+¿Quieres extenderlo para múltiples hojas, estilos, o integraciones con Google Sheets?
+
+Abre un issue o mejora el nodo.
