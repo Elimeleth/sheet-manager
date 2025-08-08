@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-sheet-manager",
+  "name": "@elimeleth/n8n-nodes-sheet-manager",
   "version": "0.1.0",
   "description": "n8n node to create, edit, delete sheets into n8.",
   "keywords": [
